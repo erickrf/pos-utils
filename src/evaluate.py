@@ -31,7 +31,7 @@ if __name__ == '__main__':
                     hits += 1
                 total_tokens += 1
     
-    accuracy = float(hits) / total_tokens
+    accuracy = 100 * float(hits) / total_tokens
     
     print '{} hits out of {}'.format(hits, total_tokens)
     print 'Accuracy: {:f}'.format(accuracy)
