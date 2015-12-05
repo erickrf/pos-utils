@@ -12,7 +12,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('system', help='File tagged by system')
     parser.add_argument('gold', help='Gold File')
-    parser.add_argument('-c', type=int, dest='count_words', default=None,
+    parser.add_argument('-t', action='store_true', help='Count errors per tag', 
+                        dest='count_tags')
+    parser.add_argument('-w', type=int, dest='count_words', default=None,
                         help='Count words tagged wrong most often and show the top ones')
     args = parser.parse_args()
     
@@ -20,6 +22,8 @@ if __name__ == '__main__':
     hits = 0
     if args.count_words:
         wrong_words = Counter()
+    if args.count_tags:
+        wrong_tags = Counter()
     
     with open(args.system, 'rb') as fs, open(args.gold, 'rb') as fg:
         for line_system, line_gold in izip(fs, fg):
@@ -34,9 +38,12 @@ if __name__ == '__main__':
                 
                 if tag_gold == tag_system:
                     hits += 1
-                elif args.count_words:
-                    lowered = token_system.lower()
-                    wrong_words[lowered] += 1
+                else:
+                    if args.count_words:
+                        lowered = token_system.lower()
+                        wrong_words[lowered] += 1
+                    if args.count_tags:
+                        wrong_tags[tag_gold] += 1
                     
                 total_tokens += 1
     
